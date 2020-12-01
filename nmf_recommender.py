@@ -20,7 +20,7 @@ def nmf_recommender(data=R,
                     user_rating=None, 
                     user_name=None, 
                     identifier_df=None,
-                   ratings=ratings):
+                   ratings=None):
         
     # replace NaN's with 0
     R_imputed = R.replace(np.nan, 0)
@@ -39,7 +39,7 @@ def nmf_recommender(data=R,
 
     for i in range(len(user_rating)):
         current_key = list(user_rating.keys())[i]
-        current_val = str(int(title_identifier.loc[title_identifier['title'] == current_key, 'movieId'].values))
+        current_val = str(int(identifier_df.loc[identifier_df['title'] == current_key, 'movieId'].values))
         identifier_list.append(current_val)
     
     user_input_converted = dict(zip(identifier_list, ratings))
@@ -63,7 +63,7 @@ def nmf_recommender(data=R,
     not_watched_identifiers['movieId'] = not_watched_identifiers['movieId'].astype(np.int64)
     
     # merge data frames by movieId
-    merge_df = pd.merge(not_watched_identifiers, title_identifier, on='movieId', how='inner')
+    merge_df = pd.merge(not_watched_identifiers, identifier_df, on='movieId', how='inner')
     
     #
     movies_not_watched_list = merge_df['title'].to_list()
@@ -75,5 +75,22 @@ def nmf_recommender(data=R,
     recommend = recommend.T.sort_values(by=user_name, ascending=False)
     
     return recommend
+
+
+"""
+Test:
+
+movies = ['Toy Story (1995)', 'Heat (1995)']
+ratings = [5, 1]
+user_rating = dict(zip(movies, ratings)) 
+results = nmf_recommender(data=R, 
+                user_rating=user_rating, 
+                user_name='Yuki', 
+                identifier_df=identifier_df,
+                ratings=ratings)
+
+print(results)
+"""
+
 
 

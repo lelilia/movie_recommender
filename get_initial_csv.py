@@ -2,6 +2,6 @@
 
 import pandas as pd
 
-ratings = pd.read_csv('data/ml-latest-small/ratings.csv')
+ratings = pd.read_csv('data/ratings.csv')
 ratings = ratings.pivot(index='userId', columns='movieId', values='rating')
-ratings.to_csv('data/inital_list.csv')
+ratings.to_csv('data/initial_list.csv')

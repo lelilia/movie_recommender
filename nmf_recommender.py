@@ -22,8 +22,8 @@ def nmf_recommender(data=R,
                     identifier_df=None,
                    ratings=None):
         
-    # replace NaN's with 0
-    R_imputed = R.replace(np.nan, 0)
+    average_movie_rating = R.mean().mean()
+    R_imputed = R.fillna(average_movie_rating)
     
     # matrix factorization
     nmf = NMF(n_components=20, max_iter=1000)
@@ -91,6 +91,7 @@ results = nmf_recommender(data=R,
 
 print(results)
 """
+
 
 
 

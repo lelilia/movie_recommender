@@ -15,7 +15,7 @@
 
     <h3>You selected</h3>
     <ul>
-        {% for input in user_input.values(): %} <p>{{input}}</p> {% endfor %}
+        {% for movie, rating in user_input.items(): %} <p>{{movie}}: {{ rating }}</p> {% endfor %}
     </ul>
 
 </body>

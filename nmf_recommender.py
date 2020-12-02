@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import NMF
+import pickle
 
 #
 R = pd.read_csv('data/initial_list.csv', index_col=0)
@@ -13,26 +14,31 @@ def nmf_recommender(data=R,
                     user_rating={'Toy Story (1995)': 5, 'Heat (1995)': 1}, 
                     user_name='Yuki', 
                     identifier_df=identifier_df,
-                   n_movies=10):
+                   n_movies=10, pretrained=True):
         
-    
+        
     # NaN imputation: mean for each column (= movie)
-    # R_imputed = R.apply(lambda x: x.fillna(x.mean(), axis=0))
-    
+    R_imputed = data.apply(lambda x: x.fillna(x.mean(), axis=0))
+
     # NaN imputation: mean for each column
-    average_movie_rating = R.mean().mean()
-    R_imputed = R.fillna(average_movie_rating)
+    #average_movie_rating = R.mean().mean()
+    #R_imputed = R.fillna(average_movie_rating)    
     
-    # matrix factorization
-    nmf = NMF(n_components=20, max_iter=1000)
-    nmf.fit(R_imputed)
-    
+    # use pretrained NMF
+    if pretrained == True:
+        with open('nmf.pkl', 'rb') as f:
+            nmf = pickle.load(f)        
+    else:
+        # train NMF
+        nmf = NMF(n_components=20, max_iter=1000)
+        nmf.fit(R_imputed)
+        
     Q = nmf.components_
     P = nmf.transform(R_imputed)
     
-    R_hat = pd.DataFrame(np.dot(P, Q), columns=R.columns, index=R.index)
+    R_hat = pd.DataFrame(np.dot(P, Q), columns=data.columns, index=data.index)
     
-    # convert user input
+    # convert movie names into movie id's
     identifier_list = []
 
     for i in range(len(user_rating)):
@@ -44,17 +50,17 @@ def nmf_recommender(data=R,
     user_input_converted = dict(zip(identifier_list, ratings))
     
     # new user data frame
-    user = pd.DataFrame(user_input_converted, index=[user_name], columns=R.columns)
+    user = pd.DataFrame(user_input_converted, index=[user_name], columns=data.columns)
     
     # fill NaN's of user w/ a certain number
     user = user.fillna(3)
     
     # fill NaN's with mean of the corresponding movie
-    # user = user.fillna(R.mean())
+    #user = user.fillna(R.mean())
     
     user_p = nmf.transform(user)
     
-    user_r = pd.DataFrame(np.dot(user_p, Q), index=[user_name], columns=R.columns)
+    user_r = pd.DataFrame(np.dot(user_p, Q), index=[user_name], columns=data.columns)
     
     # drop movie identifiers which user has already seen
     recommend = user_r.drop(columns=user_input_converted.keys())
@@ -81,10 +87,10 @@ def nmf_recommender(data=R,
     
     return ranks_list
 
-"""
+###
 # test for Yuki
 user_rating = {'Toy Story (1995)': 5, 'Garfield: The Movie (2004)': 5, 
                'Forrest Gump (1994)': 1,  'Heat (1995)': 1}
-results = nmf_recommender(user_rating=user_rating, n_movies=15)
+results = nmf_recommender(user_rating=user_rating, n_movies=15, pretrained=True)
 print(results)
-"""
+###

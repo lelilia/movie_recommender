@@ -1,3 +1,12 @@
+data/ml-latest-small
+.gitignore
+*.ipynb
+__init__.py
+db.py
+requirements.txt
+schema.sql
+ml_models.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

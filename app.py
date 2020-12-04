@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request, render_template_string
+from flask_sqlalchemy import SQLAlchemy
+from decouple import config
 
 from functions import get_all_movie_names
-from ml_models import dummy_recommendation
+# from ml_models import dummy_recommendation
 from nmf_recommender import nmf_recommender
 
-app = Flask(__name__)
+db_url = config('DATABASE_URL')
+db_pw = config('DATABASE_PASSWORD')
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:{db_pw}@{db_url}:5432/movie-db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 @app.route('/')
 def index():

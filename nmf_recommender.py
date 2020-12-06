@@ -93,16 +93,15 @@ def nmf_recommender(data=R,
         print('Too much recommendations are required! We can you give just 50 movie recommendations!')
         n_movies = 50
         
-    # take 
+    # take movies with best 50 values
     recommend_50 = recommend_ranks[:50]
     
-    #
+    # sample n movies out of the best 50
     top = random.sample(list(recommend_50['movie_ranking']), n_movies)
 
-    
     return top
 
-
+"""
 # test for Yuki
 t0 = time.time()
 user_rating = {'Toy Story (1995)': 5, 'Garfield: The Movie (2004)': 5, 
@@ -111,5 +110,6 @@ results = nmf_recommender(user_rating=user_rating, n_movies=15, pretrained=True)
 print(results)
 time_diff = time.time() - t0
 print(time_diff)
+"""
 
 

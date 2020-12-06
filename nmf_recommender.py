@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.decomposition import NMF
 import pickle
+import time
 
 #
 R = pd.read_csv('data/initial_list.csv', index_col=0)
@@ -87,10 +88,14 @@ def nmf_recommender(data=R,
     
     return ranks_list
 
-###
+"""
 # test for Yuki
+t0 = time.time()
 user_rating = {'Toy Story (1995)': 5, 'Garfield: The Movie (2004)': 5, 
                'Forrest Gump (1994)': 1,  'Heat (1995)': 1}
 results = nmf_recommender(user_rating=user_rating, n_movies=15, pretrained=True)
 print(results)
-###
+time_diff = time.time() - t0
+print(time_diff)
+"""
+

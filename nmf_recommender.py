@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.decomposition import NMF
 import pickle
 import time
+import random
 
 #
 R = pd.read_csv('data/initial_list.csv', index_col=0)
@@ -19,11 +20,11 @@ def nmf_recommender(data=R,
         
         
     # NaN imputation: mean for each column (= movie)
-    R_imputed = data.apply(lambda x: x.fillna(x.mean(), axis=0))
+    #R_imputed = data.apply(lambda x: x.fillna(x.mean(), axis=0))
 
     # NaN imputation: mean for each column
-    #average_movie_rating = R.mean().mean()
-    #R_imputed = R.fillna(average_movie_rating)    
+    average_movie_rating = R.mean().mean()
+    R_imputed = R.fillna(average_movie_rating)    
     
     # use pretrained NMF
     if pretrained == True:
@@ -54,7 +55,7 @@ def nmf_recommender(data=R,
     user = pd.DataFrame(user_input_converted, index=[user_name], columns=data.columns)
     
     # fill NaN's of user w/ a certain number
-    user = user.fillna(3)
+    user = user.fillna(0)
     
     # fill NaN's with mean of the corresponding movie
     #user = user.fillna(R.mean())
@@ -84,11 +85,24 @@ def nmf_recommender(data=R,
     recommend_transposed = recommend.T
     recommend_transposed['movie_ranking'] = recommend_transposed.index
     recommend_ranks = recommend_transposed.sort_values(by=user_name, ascending=False)
-    ranks_list = list(recommend_ranks['movie_ranking'])[:n_movies]
     
-    return ranks_list
+    # Accept 50 recommendations tops
+    try:
+        assert (n_movies <= 50)
+    except:
+        print('Too much recommendations are required! We can you give just 50 movie recommendations!')
+        n_movies = 50
+        
+    # take 
+    recommend_50 = recommend_ranks[:50]
+    
+    #
+    top = random.sample(list(recommend_50['movie_ranking']), n_movies)
 
-"""
+    
+    return top
+
+
 # test for Yuki
 t0 = time.time()
 user_rating = {'Toy Story (1995)': 5, 'Garfield: The Movie (2004)': 5, 
@@ -97,5 +111,5 @@ results = nmf_recommender(user_rating=user_rating, n_movies=15, pretrained=True)
 print(results)
 time_diff = time.time() - t0
 print(time_diff)
-"""
+
 

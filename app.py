@@ -6,6 +6,7 @@ from functions import get_all_movie_names
 # from ml_models import dummy_recommendation
 from nmf_recommender import nmf_recommender
 
+
 db_url = config('DATABASE_URL')
 db_pw = config('DATABASE_PASSWORD')
 

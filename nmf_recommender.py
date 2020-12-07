@@ -8,17 +8,18 @@ import random
 from app import db
 
 engine = db.get_engine()
+R = pd.read_csv('data/initial_list.csv', index_col=0)
+identifier_df = pd.read_csv('data/movie_title_and_identifier.csv')
 
-R = pd.read_sql_query('SELECT user_id AS "userId", movie_id AS "movieId", rating FROM ratings', con=engine)
-R = R.pivot(index='userId', columns='movieId', values='rating')
-R.columns = R.columns.astype(str)
+# R = pd.read_sql_query('SELECT user_id AS "userId", movie_id AS "movieId", rating FROM ratings', con=engine)
+# R = R.pivot(index='userId', columns='movieId', values='rating')
+# R.columns = R.columns.astype(str)
 
-identifier_df = pd.read_csv('data/movie_title_and_identifier.csv', index_col=0)
-identifier_df = pd.read_sql_query('SELECT id as "movieId", year, title FROM movies', con=engine)
-identifier_df['title'] = identifier_df['title'] + ' (' + identifier_df['year'] + ')'
+# identifier_df = pd.read_sql_query('SELECT id as "movieId", year, title FROM movies', con=engine)
+# identifier_df['title'] = identifier_df['title'] + ' (' + identifier_df['year'] + ')'
 #
 def nmf_recommender(data=R,
-                    user_rating={'Toy Story': 5, 'Heat': 1},
+                    user_rating={'Toy Story (1995)': 5, 'Heat (1995)': 1},
                     user_name='Yuki', 
                     identifier_df=identifier_df,
                    n_movies=10, pretrained=True):
@@ -34,7 +35,7 @@ def nmf_recommender(data=R,
     # use pretrained NMF
     if pretrained == True:
         with open('nmf.pkl', 'rb') as f:
-            nmf = pickle.load(f)        
+            nmf = pickle.load(f)
     else:
         # train NMF
         nmf = NMF(n_components=20, max_iter=1000)
@@ -52,16 +53,16 @@ def nmf_recommender(data=R,
         current_key = list(user_rating.keys())[i]
         current_val = str(int(identifier_df.loc[identifier_df['title'] == current_key, 'movieId'].values))
         identifier_list.append(current_val)
-    
+
     ratings = list(user_rating.values())
     user_input_converted = dict(zip(identifier_list, ratings))
-    
+
     # new user data frame
     user = pd.DataFrame(user_input_converted, index=[user_name], columns=data.columns)
-    
+
     # fill NaN's of user w/ a certain number
     user = user.fillna(0)
-    
+
     # fill NaN's with mean of the corresponding movie
     #user = user.fillna(R.mean())
     

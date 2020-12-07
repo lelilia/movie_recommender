@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, render_template_string
+from flask import Flask, render_template, request, render_template_string, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from functions import get_all_movie_names
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 
-from forms import InitialMovieRatingForm
+from app.forms import InitialMovieRatingForm, LoginForm
 from config import Config
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,7 +15,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 Bootstrap(app)
 
-from nmf_recommender import nmf_recommender
+# from nmf_recommender import nmf_recommender
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -23,7 +24,7 @@ def index():
     if form.validate_on_submit():
         flash(f'Your rating is: {form.movie_best.data}: {form.rating_best.data}, {form.movie_worst.data}: {form.rating_worst.data}')
 
-        return redirect(url_for('recommendations'))
+        return redirect(url_for('recommend'))
 
     return render_template("index.html", all_movies=all_movies, form=form)
 
@@ -41,6 +42,13 @@ def recommend():
 
     return render_template("recommendations.html", user_input=user_input, result=result)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash(f'Login requested for {form.username.data}')
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+
 if __name__ == '__main__':
     app.run(debug=True)
-

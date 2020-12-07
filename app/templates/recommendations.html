@@ -10,10 +10,11 @@
     </ul>
 
     <a href="/">Go back home!</a>
-
+    {% if user_input %}
     <h3>You selected</h3>
     <ul>
         {% for movie, rating in user_input.items(): %} <p>{{movie}}: {{ rating }}</p> {% endfor %}
     </ul>
+    {% endif %}
 {% endblock app_content %}
     

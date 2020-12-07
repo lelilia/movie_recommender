@@ -29,7 +29,7 @@
 
     <datalist id = 'movie-list'>
         {% for movie in all_movies: %}
-        <option>{{movie}}</option>
+        <option>{{movie.title}}</option>
         {% endfor %}
     </datalist>
 {% endblock app_content %}

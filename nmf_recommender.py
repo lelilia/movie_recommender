@@ -5,15 +5,20 @@ from sklearn.decomposition import NMF
 import pickle
 import time
 import random
+from app import db
 
+engine = db.get_engine()
+
+R = pd.read_sql_query('SELECT user_id AS "userId", movie_id AS "movieId", rating FROM ratings', con=engine)
+R = R.pivot(index='userId', columns='movieId', values='rating')
+R.columns = R.columns.astype(str)
+
+identifier_df = pd.read_csv('data/movie_title_and_identifier.csv', index_col=0)
+identifier_df = pd.read_sql_query('SELECT id as "movieId", year, title FROM movies', con=engine)
+identifier_df['title'] = identifier_df['title'] + ' (' + identifier_df['year'] + ')'
 #
-R = pd.read_csv('data/initial_list.csv', index_col=0)
-identifier_df = pd.read_csv('data/movie_title_and_identifier.csv')
-
-
-#
-def nmf_recommender(data=R, 
-                    user_rating={'Toy Story (1995)': 5, 'Heat (1995)': 1}, 
+def nmf_recommender(data=R,
+                    user_rating={'Toy Story': 5, 'Heat': 1},
                     user_name='Yuki', 
                     identifier_df=identifier_df,
                    n_movies=10, pretrained=True):

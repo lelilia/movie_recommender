@@ -1,14 +1,20 @@
 from flask import Flask, render_template, request, render_template_string
 from flask_bootstrap import Bootstrap
 from functions import get_all_movie_names
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-from nmf_recommender import nmf_recommender
+
 from forms import InitialMovieRatingForm
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 Bootstrap(app)
+
+from nmf_recommender import nmf_recommender
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Recommender</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
     <h1>Movie Recommender</h1>
+
+    {% if form %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    {% endif %}
 
     <form action="/recommender">
         <label for="favorite-movie">Your favorite movie of all times</label>
@@ -28,6 +32,5 @@
         <option>{{movie}}</option>
         {% endfor %}
     </datalist>
-
-</body>
-</html>
+{% endblock app_content %}
+    

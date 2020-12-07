@@ -1,31 +1,31 @@
 from flask import Flask, render_template, request, render_template_string
-from flask_sqlalchemy import SQLAlchemy
-from decouple import config
-
+from flask_bootstrap import Bootstrap
 from functions import get_all_movie_names
-# from ml_models import dummy_recommendation
+
 from nmf_recommender import nmf_recommender
-
-
-
-
-db_url = config('DATABASE_URL')
-db_pw = config('DATABASE_PASSWORD')
+from forms import InitialMovieRatingForm
+from config import Config
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:{db_pw}@{db_url}:5432/movie-db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config.from_object(Config)
+Bootstrap(app)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     all_movies = get_all_movie_names()
-    return render_template("index.html", all_movies=all_movies)
+    form = InitialMovieRatingForm()
+    if form.validate_on_submit():
+        flash(f'Your rating is: {form.movie_best.data}: {form.rating_best.data}, {form.movie_worst.data}: {form.rating_worst.data}')
+
+        return redirect(url_for('recommendations'))
+
+    return render_template("index.html", all_movies=all_movies, form=form)
 
 @app.route("/recommender")
 def recommend():
     # result = dummy_recommendation(5)
     user_input_raw = dict(request.args)
+
     # TODO hard coded! needs to change
     movies = [user_input_raw['fav_movie'], user_input_raw['worst_movie']]
     ratings = [5, 1]

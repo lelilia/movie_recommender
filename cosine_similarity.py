@@ -119,6 +119,7 @@ def cosine_sim(data=movies,
     
     return movie_title_ranking
 
+
 """
 t0 = time.time()
 results = cosine_sim(data=movies,
@@ -130,4 +131,5 @@ print(results)
 time_diff = time.time() - t0
 print(time_diff)
 """
+
     

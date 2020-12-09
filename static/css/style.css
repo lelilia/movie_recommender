@@ -1,6 +1,7 @@
 body {
     background: rgb(241, 122, 221) linear-gradient(90deg, rgba(241, 122, 221, 1) 0%, rgba(255, 172, 171, 1) 62%, rgba(249, 248, 113, 1) 100%);
     font-family: 'Chilanka';
+    position: relative;
 }
 
 .navbar {
@@ -22,4 +23,11 @@ body {
 
 .navbar-default .navbar-toggle .icon-bar {
     background-color: rgba(249, 248, 113, 1);
+}
+
+.btn-primary {
+    background: rgb(241, 122, 221);
+    background: linear-gradient(90deg, rgba(249, 248, 113, 1) 0%, rgba(255, 172, 171, 1) 62%, rgba(241, 122, 221, 1) 100%);
+    border-style: none;
+    color: rgb(0, 149, 209);
 }

@@ -1,5 +1,9 @@
 {% extends 'bootstrap/base.html' %}
-
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="static/css/starability-all.min.css">
+<link rel="stylesheet" href="static/css/style.css">
+{% endblock %}
 
 {% block title %}
     {% if title %}{{ title }} - Movie Recommender{% else %}Welcome to Movie Recommender{% endif %}

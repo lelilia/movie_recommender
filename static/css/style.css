@@ -1,0 +1,9 @@
+body {
+    background: rgb(241, 122, 221) linear-gradient(90deg, rgba(241, 122, 221, 1) 0%, rgba(255, 172, 171, 1) 62%, rgba(249, 248, 113, 1) 100%);
+}
+
+.navbar-header {
+    background: rgb(0, 149, 209);
+    background: linear-gradient(90deg, rgba(0, 149, 209, 1) 0%, rgba(173, 159, 248, 1) 56%, rgba(246, 164, 232, 1) 100%);
+    border-color: None;
+}

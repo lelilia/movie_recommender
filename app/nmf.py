@@ -6,6 +6,7 @@ import pickle
 import os
 
 from app import db
+from app.models import Ratings, Users
 
 def get_model(R, pkl_file='app/nmf.pkl'):
     ''' either load the model from file or train a new model'''
@@ -38,10 +39,21 @@ R_hat = pd.DataFrame(np.dot(P,Q), columns=R.columns, index=R.index)
 
 
 
-def nmf_recommender(user_rating = {1: 5, 6: 1}, user_id=6, max_length=10):
+def nmf_recommender(user_rating = {1:5, 3:3}, user_id=99999, max_length=10):
     ''' get movie recommendation with nmf model based on favorite and least favorite movie'''
 
+    if user_rating is None:
+        user_rating = {}
+        u = Users.query.get(user_id)
+        print('------------------')
+        print(u)
+        print(u.rated)
+        print('--------------------')
+        for r in u.rated:
+            user_rating[r.movie.id] = r.rating
+        print(user_rating)
     user = pd.DataFrame(user_rating, index = [user_id], columns = R.columns)
+    print(user)
     user = user.fillna(0)
 
     user_p = nmf.transform(user)

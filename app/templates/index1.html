@@ -2,12 +2,43 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Movie Recommender</h1>
+    <h1>Movie Recommender - anonymous user</h1>
+
+    <p>
+        In order to give you the best recommendation please enter your favorite and least favorite movie.
+    </p>
+    <br>
+    <br>
 
     {% if form %}
     <div class="row">
         <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+            <form action="/recommender">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.movie_best.label }}<br>
+                    {{ form.movie_best }}
+                </p>
+                <fieldset class="starability-basic">
+                    {% for subfield in form.rating_best %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    {% endfor %}
+                </fieldset>
+                <p>
+                    {{ form.movie_worst.label }}<br>
+                    {{ form.movie_worst }}
+                </p>
+                <fieldset class="starability-basic">
+                    {% for subfield in form.rating_worst %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    {% endfor %}
+                </fieldset>
+                <p>
+                <input type="submit">
+                </p>
+            </form>
         </div>
     </div>
     {% endif %}
@@ -32,5 +63,6 @@
         <option>{{movie.title}}</option>
         {% endfor %}
     </datalist>
+
 {% endblock app_content %}
-    
+

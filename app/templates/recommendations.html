@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 
 
-
 {% block app_content %}
 
     <h1>Recommended for you</h1>
     <ul>
-        {% for r in result: %} <li>{{r}}</li>{% endfor %}
+        {% for r in result: %} <li>{{ r }}</li>{% endfor %}
     </ul>
 
     <a href="/">Go back home!</a>

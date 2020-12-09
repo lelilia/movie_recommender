@@ -1,15 +1,60 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-
 {% block app_content %}
-    <h1>Movie Recommender</h1>
+
+    {% if not current_user.is_anonymous %}
+    <h4>welcome {{ current_user.username }}</h4>
+    {% endif %}
+
+    <br>
+    <br>
+
     {% if form %}
     <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        <div class="col-md-6">
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+            <p>
+                {# {{ form.movie_best.label }}<br> #}
+                {{ form.movie_best }}
+            </p>
+            {% for error in form.movie_best.errors %}
+            <span style="color: grey;">[{{ error }}]</span>
+            {% endfor %}
+            <fieldset class="starability-basic">
+                {% for subfield in form.rating_best %}
+                {{ subfield }}
+                {{ subfield.label }}
+                {% endfor %}
+            </fieldset>
+            <p>
+                {# {{ form.movie_worst.label }}<br> #}
+                {{ form.movie_worst }}
+            </p>
+            {% for error in form.movie_worst.errors %}
+            <span style="color: grey;">[{{ error }}]</span>
+            {% endfor %}
+            <fieldset class="starability-basic">
+                {% for subfield in form.rating_worst %}
+                {{ subfield }}
+                {{ subfield.label }}
+                {% endfor %}
+            </fieldset>
+            <p>
+                {{ form.submit() }}
+            </p>
+            </form>
         </div>
     </div>
     {% endif %}
+
+
+    <datalist id = 'movie-list'>
+        {% for movie in all_movies: %}
+        <option>{{movie.title}}</option>
+        {% endfor %}
+    </datalist>
+
 {% endblock app_content %}
-    
+

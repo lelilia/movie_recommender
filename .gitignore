@@ -1,7 +1,6 @@
 data/ml-latest-small
 .gitignore
 *.ipynb
-__init__.py
 db.py
 requirements.txt
 schema.sql
